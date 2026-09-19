@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  var p = location.pathname;
+  if (p.charAt(p.length - 1) !== '/') p += '/';
+  document.write('<base href="' + p + '">');
+</script>
+<title>OpenClaw GitHub Repository Atlas</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b0a;
+    --surface: #161311;
+    --surface2: #1d1916;
+    --surface3: #261f1b;
+    --border: #3a312b;
+    --text: #f6efe7;
+    --text-muted: #b9aaa0;
+    --openclaw: #ff5a3c;
+    --blue: #3b82f6;
+    --cyan: #22d3ee;
+    --green: #22c55e;
+    --orange: #ff5a3c;
+    --red: #ef4444;
+    --pink: #f472b6;
+    --purple: #a78bfa;
+    --yellow: #fbbf24;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 85% -10%, rgba(255, 90, 60, 0.22), transparent 28rem),
+      radial-gradient(circle at 8% 4%, rgba(251, 191, 36, 0.1), transparent 26rem),
+      linear-gradient(180deg, #1a120e 0%, var(--bg) 42rem);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    padding: 40px 24px 52px;
+  }
+
+  a { color: inherit; }
+
+  .header,
+  .search-panel,
+  .repo-section,
+  .footer {
+    max-width: 1480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -0.6px;
+  }
+
+  .logo-box {
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff5a3c, #ff8a4c);
+    color: #1a0c08;
+    font-weight: 800;
+    box-shadow: 0 0 24px rgba(255, 90, 60, 0.32);
+  }
+
+  .page-header p {
+    max-width: 920px;
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  .metric-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .metric-card {
+    min-width: 148px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(17, 22, 26, 0.8);
+  }
+
+  .metric-card strong {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .metric-card span {
+    display: block;
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .jump-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-top: 18px;
+    align-items: flex-start;
+  }
+
+  .jump-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(17, 22, 26, 0.48);
+  }
+
+  .jump-group-label {
+    padding: 0 4px 0 2px;
+    color: var(--text-muted);
+    font: 700 10px 'JetBrains Mono', monospace;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+
+  .jump-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 10px;
+    background: rgba(17, 22, 26, 0.72);
+    color: var(--text);
+    text-decoration: none;
+    font: 700 11px 'JetBrains Mono', monospace;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+
+  .jump-group-clusters a {
+    border-color: rgba(255, 90, 60, 0.34);
+    background: rgba(255, 90, 60, 0.07);
+  }
+
+  .jump-group-other {
+    border-color: rgba(80, 230, 255, 0.22);
+    background: rgba(80, 230, 255, 0.045);
+  }
+
+  .jump-group-other a {
+    border-color: rgba(80, 230, 255, 0.36);
+    background: rgba(80, 230, 255, 0.08);
+  }
+
+  .jump-nav a:hover {
+    border-color: var(--openclaw);
+    color: var(--openclaw);
+    background: rgba(255, 90, 60, 0.1);
+  }
+
+  .jump-group-other a:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(80, 230, 255, 0.12);
+  }
+
+  .jump-nav span {
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  .search-panel {
+    display: grid;
+    grid-template-columns: auto minmax(240px, 1fr) auto auto auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background:
+      radial-gradient(circle at top right, rgba(255, 90, 60, 0.14), transparent 24rem),
+      linear-gradient(180deg, rgba(23, 30, 35, 0.98), rgba(17, 22, 26, 0.98));
+  }
+
+  .search-label,
+  .sort-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .search-input {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(8, 11, 13, 0.95);
+    color: var(--text);
+    outline: none;
+    padding: 12px 14px;
+    font: 500 14px 'DM Sans', system-ui, sans-serif;
+  }
+
+  .search-input:focus {
+    border-color: rgba(255, 90, 60, 0.82);
+    box-shadow: 0 0 0 3px rgba(255, 90, 60, 0.14);
+  }
+
+  .button {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(8, 11, 13, 0.95);
+    color: var(--text);
+    padding: 12px 13px;
+    font: 700 12px 'JetBrains Mono', monospace;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .button:hover,
+  .button.active {
+    border-color: var(--openclaw);
+    color: var(--openclaw);
+  }
+
+  .button:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .repo-section {
+    margin-top: 34px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: end;
+    margin-bottom: 14px;
+  }
+
+  .section-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+
+  .section-header p {
+    margin: 6px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .section-mark {
+    width: 10px;
+    height: 20px;
+    border-radius: 2px;
+    background: var(--openclaw);
+    display: inline-block;
+  }
+
+  .section-mark-blue { background: var(--blue); }
+  .section-mark-cyan { background: var(--cyan); }
+  .section-mark-orange { background: var(--orange); }
+  .section-mark-pink { background: var(--pink); }
+  .section-mark-purple { background: var(--purple); }
+  .section-mark-green { background: var(--green); }
+  .section-mark-red { background: var(--red); }
+
+  .count-pill,
+  .cluster-pill {
+    display: inline-block;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 8px;
+    color: var(--text-muted);
+    background: rgba(8, 11, 13, 0.45);
+    font: 600 11px 'JetBrains Mono', monospace;
+  }
+
+  .count-pill {
+    white-space: nowrap;
+  }
+
+  .cluster-pill {
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  .cluster-link {
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .cluster-link:hover {
+    color: var(--openclaw);
+    border-color: var(--openclaw);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    scrollbar-color: #33516d #08111d;
+    scrollbar-width: thin;
+  }
+
+  table {
+    width: 100%;
+    min-width: 1120px;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+  }
+
+  .traction-section table {
+    min-width: 1220px;
+  }
+
+  .col-repository { width: 22%; }
+  .col-language { width: 10%; }
+  .col-description { width: 48%; }
+  .col-github { width: 20%; }
+  .col-traction-repository { width: 17%; }
+  .col-traction-description { width: 48%; }
+  .col-traction-cluster { width: 12%; }
+  .col-traction-language { width: 8%; }
+  .col-traction-github { width: 15%; }
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 13px 14px;
+    text-align: left;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font: 700 11px 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+
+  td {
+    padding: 13px 14px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255, 90, 60, 0.045); }
+
+  .repo-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: 700 14px 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .repo-name a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .repo-name a:hover,
+  .repo-slug:hover {
+    color: var(--openclaw);
+    text-decoration: underline;
+  }
+
+  .repo-slug {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font: 500 11px 'JetBrains Mono', monospace;
+  }
+
+  .avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--surface3);
+  }
+
+  .tag,
+  .badge {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font: 700 11px 'JetBrains Mono', monospace;
+    background: rgba(149, 163, 154, 0.14);
+    color: var(--text-muted);
+  }
+
+  .tag-py { background: rgba(127, 186, 0, 0.14); color: var(--green); }
+  .tag-csharp { background: rgba(134, 97, 197, 0.18); color: var(--purple); }
+  .tag-c, .tag-cpp, .tag-cuda { background: rgba(69, 168, 255, 0.13); color: var(--blue); }
+  .tag-ts, .tag-js { background: rgba(250, 204, 21, 0.13); color: var(--yellow); }
+  .tag-go { background: rgba(80, 230, 255, 0.13); color: var(--cyan); }
+  .tag-shell { background: rgba(244, 114, 182, 0.13); color: var(--pink); }
+
+  .topic-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 7px;
+  }
+
+  .badge {
+    font-size: 10px;
+    color: #c0d1e4;
+  }
+
+  .keyword-button {
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .keyword-button:hover,
+  .keyword-button:focus-visible {
+    color: var(--openclaw);
+    background: rgba(255, 90, 60, 0.16);
+    outline: none;
+  }
+
+  .description-cell {
+    color: var(--text);
+    max-width: 54rem;
+  }
+
+  .github-cell {
+    min-width: 210px;
+  }
+
+  .gh-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 10px;
+    align-items: center;
+  }
+
+  .star-count,
+  .fork-count,
+  .commit-count,
+  .metric-sm {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .star-count {
+    color: var(--yellow);
+    font-weight: 800;
+    font-size: 13px;
+  }
+
+  .fork-count,
+  .commit-count,
+  .metric-sm {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .last-updated {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .activity-block {
+    margin-top: 8px;
+  }
+
+  .activity-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(149, 163, 154, 0.16);
+    overflow: hidden;
+  }
+
+  .activity-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff5a3c, #ff8a4c);
+  }
+
+  .activity-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 5px;
+    color: var(--text-muted);
+    font: 600 10px 'JetBrains Mono', monospace;
+  }
+
+  .number-cell,
+  .rank-cell,
+  .date-cell {
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .number-cell {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .score-cell {
+    color: var(--openclaw);
+  }
+
+  .date-cell {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .footer {
+    margin-top: 30px;
+    color: var(--text-muted);
+    font: 500 11px 'JetBrains Mono', monospace;
+    line-height: 1.7;
+  }
+
+  .footer a { color: var(--openclaw); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    body { padding: 26px 14px 40px; }
+    .page-title { font-size: 24px; }
+    .search-panel { grid-template-columns: 1fr; }
+    .button, .search-label, .sort-label { width: 100%; }
+    .section-header { display: block; }
+    .count-pill { margin-top: 10px; }
+  }
+</style>
+</head>
+<body>
+  <header class="header page-header">
+    <h1 class="page-title"><span class="logo-box">OC</span>OpenClaw GitHub Repository Atlas</h1>
+    <p>Searchable snapshot of public repositories from OpenClaw's <a href="https://github.com/orgs/openclaw/repositories" target="_blank" rel="noreferrer">openclaw organization</a>. Included repositories have more than 200 stars and were pushed within the last three months, since 2026-06-19.</p>
+    <div class="metric-strip" aria-label="Catalog summary">
+      <div class="metric-card"><strong>25</strong><span>qualified repos</span></div>
+      <div class="metric-card"><strong>439k</strong><span>combined stars</span></div>
+      <div class="metric-card"><strong>18.4k</strong><span>commits in 30d</span></div>
+      <div class="metric-card"><strong>7</strong><span>technology clusters</span></div>
+    </div>
+    <nav class="jump-nav" aria-label="Section links">
+      <div class="jump-group jump-group-clusters"><span class="jump-group-label">Clusters</span><a href="#section-traction">Fresh Traction</a>
+<a href="#cluster-core-runtime-assistant">Core Runtime &amp; Assistant</a>
+<a href="#cluster-skills-plugins-hub">Skills, Plugins &amp; Hub</a>
+<a href="#cluster-agent-protocols-mcp">Agent Protocols, ACP &amp; MCP</a>
+<a href="#cluster-review-automation">Review, Sweeping &amp; Automation</a>
+<a href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a>
+<a href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a>
+<a href="#cluster-packaging-nix-infra">Packaging, Nix &amp; Infrastructure</a></div>
+    </nav>
+  </header>
+
+  <div class="search-panel" role="search">
+    <div class="search-label">Search</div>
+    <input id="global-table-search" class="search-input" type="search" autocomplete="off" spellcheck="false" placeholder="repo, topic, language, description">
+    <button id="global-search-clear" class="button" type="button" disabled>Clear</button>
+    <div class="sort-label">Sort by</div>
+    <button id="sort-stars" class="button" type="button">Stars</button>
+    <button id="sort-fresh" class="button active" type="button">Freshness</button>
+  </div>
+
+
+<section class="repo-section traction-section" id="section-traction" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-blue"></span>Established Repos With Fresh Traction</h2>
+      <p>Ranked by recent commits, freshness, stars, and forks so active projects with broad audiences rise first.</p>
+    </div>
+    <span class="count-pill">Top 25</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-traction-repository">
+        <col class="col-traction-language">
+        <col class="col-traction-description">
+        <col class="col-traction-cluster">
+        <col class="col-traction-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>Cluster</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="390096" data-pushed="1789858985" data-name="openclaw" data-cluster="core-runtime-assistant">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer">openclaw</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer">openclaw/openclaw</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">The AI that really does things. Any OS. Any Platform. The lobster way. 🦞 <div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="assistant" title="Filter by assistant">assistant</button><button class="badge keyword-button" type="button" data-filter-keyword="crustacean" title="Filter by crustacean">crustacean</button><button class="badge keyword-button" type="button" data-filter-keyword="molty" title="Filter by molty">molty</button><button class="badge keyword-button" type="button" data-filter-keyword="own-your-data" title="Filter by own-your-data">own-your-data</button><button class="badge keyword-button" type="button" data-filter-keyword="personal" title="Filter by personal">personal</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-core-runtime-assistant">Core Runtime &amp; Assistant</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 390k</span>
+      <span class="fork-count">⑂ 82k</span>
+      <span class="commit-count">⟳ 96.9k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 480">
+      <div class="activity-bar"><span style="width: 100%"></span></div>
+      <div class="activity-meta">
+        <span>15.8k commits / 30d</span>
+        <span>score 480</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="1987" data-pushed="1789831709" data-name="clawsweeper" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawsweeper" target="_blank" rel="noreferrer">clawsweeper</a></div><a class="repo-slug" href="https://github.com/openclaw/clawsweeper" target="_blank" rel="noreferrer">openclaw/clawsweeper</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">ClawSweeper scans all issues and PRs and suggest what we can close, and why. It runs every PR / Issue once a week.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="bot" title="Filter by bot">bot</button><button class="badge keyword-button" type="button" data-filter-keyword="openclaw" title="Filter by openclaw">openclaw</button><button class="badge keyword-button" type="button" data-filter-keyword="review" title="Filter by review">review</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-review-automation">Review, Sweeping &amp; Automation</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2k</span>
+      <span class="fork-count">⑂ 303</span>
+      <span class="commit-count">⟳ 7.1k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 424">
+      <div class="activity-bar"><span style="width: 88%"></span></div>
+      <div class="activity-meta">
+        <span>358 commits / 30d</span>
+        <span>score 424</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="1408" data-pushed="1789835611" data-name="crabbox" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/crabbox" target="_blank" rel="noreferrer">crabbox</a></div><a class="repo-slug" href="https://github.com/openclaw/crabbox" target="_blank" rel="noreferrer">openclaw/crabbox</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">Crabbox: warm a box, sync the diff, run the suite.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="agent-skills" title="Filter by agent-skills">agent-skills</button><button class="badge keyword-button" type="button" data-filter-keyword="herdr-plugin" title="Filter by herdr-plugin">herdr-plugin</button><button class="badge keyword-button" type="button" data-filter-keyword="remote-test-runner" title="Filter by remote-test-runner">remote-test-runner</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-review-automation">Review, Sweeping &amp; Automation</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.4k</span>
+      <span class="fork-count">⑂ 182</span>
+      <span class="commit-count">⟳ 3k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 420">
+      <div class="activity-bar"><span style="width: 88%"></span></div>
+      <div class="activity-meta">
+        <span>764 commits / 30d</span>
+        <span>score 420</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="5184" data-pushed="1789780951" data-name="peekaboo" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/Peekaboo" target="_blank" rel="noreferrer">Peekaboo</a></div><a class="repo-slug" href="https://github.com/openclaw/Peekaboo" target="_blank" rel="noreferrer">openclaw/Peekaboo</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">Peekaboo is a macOS CLI &amp; optional MCP server that enables AI agents to capture screenshots of applications, or the entire system, with optional visual question answering through local or remote AI models.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="MCP" title="Filter by MCP">MCP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="macOS" title="Filter by macOS">macOS</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="screenshots" title="Filter by screenshots">screenshots</button><button class="badge keyword-button" type="button" data-filter-keyword="swift" title="Filter by swift">swift</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 5.2k</span>
+      <span class="fork-count">⑂ 399</span>
+      <span class="commit-count">⟳ 3.5k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 281">
+      <div class="activity-bar"><span style="width: 59%"></span></div>
+      <div class="activity-meta">
+        <span>199 commits / 30d</span>
+        <span>score 281</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="9430" data-pushed="1789781148" data-name="clawhub" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawhub" target="_blank" rel="noreferrer">clawhub</a></div><a class="repo-slug" href="https://github.com/openclaw/clawhub" target="_blank" rel="noreferrer">openclaw/clawhub</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Skill + Plugin Registry for OpenClaw<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button><button class="badge keyword-button" type="button" data-filter-keyword="Plugins" title="Filter by Plugins">Plugins</button><button class="badge keyword-button" type="button" data-filter-keyword="directory" title="Filter by directory">directory</button><button class="badge keyword-button" type="button" data-filter-keyword="skill" title="Filter by skill">skill</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-skills-plugins-hub">Skills, Plugins &amp; Hub</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 9.4k</span>
+      <span class="fork-count">⑂ 1.5k</span>
+      <span class="commit-count">⟳ 2.7k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 251">
+      <div class="activity-bar"><span style="width: 52%"></span></div>
+      <div class="activity-meta">
+        <span>161 commits / 30d</span>
+        <span>score 251</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="2120" data-pushed="1789855725" data-name="openclaw-windows-node" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw-windows-node" target="_blank" rel="noreferrer">openclaw-windows-node</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw-windows-node" target="_blank" rel="noreferrer">openclaw/openclaw-windows-node</a></td>
+  <td><span class="tag tag-csharp">C#</span></td>
+  <td class="description-cell">Windows companion suite for OpenClaw<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Windows" title="Filter by Windows">Windows</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2.1k</span>
+      <span class="fork-count">⑂ 295</span>
+      <span class="commit-count">⟳ 1.4k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 182">
+      <div class="activity-bar"><span style="width: 38%"></span></div>
+      <div class="activity-meta">
+        <span>108 commits / 30d</span>
+        <span>score 182</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="3263" data-pushed="1789838002" data-name="acpx" data-cluster="agent-protocols-mcp">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/acpx" target="_blank" rel="noreferrer">acpx</a></div><a class="repo-slug" href="https://github.com/openclaw/acpx" target="_blank" rel="noreferrer">openclaw/acpx</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Headless CLI client for stateful Agent Client Protocol (ACP) sessions<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="ACP" title="Filter by ACP">ACP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="agentclientprotocol" title="Filter by agentclientprotocol">agentclientprotocol</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-agent-protocols-mcp">Agent Protocols, ACP &amp; MCP</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 3.3k</span>
+      <span class="fork-count">⑂ 335</span>
+      <span class="commit-count">⟳ 613</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 176">
+      <div class="activity-bar"><span style="width: 37%"></span></div>
+      <div class="activity-meta">
+        <span>98 commits / 30d</span>
+        <span>score 176</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="8428" data-pushed="1789453177" data-name="gogcli" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/gogcli" target="_blank" rel="noreferrer">gogcli</a></div><a class="repo-slug" href="https://github.com/openclaw/gogcli" target="_blank" rel="noreferrer">openclaw/gogcli</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">Google Workspace in your terminal.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="gcal" title="Filter by gcal">gcal</button><button class="badge keyword-button" type="button" data-filter-keyword="gcontacts" title="Filter by gcontacts">gcontacts</button><button class="badge keyword-button" type="button" data-filter-keyword="gdrive" title="Filter by gdrive">gdrive</button><button class="badge keyword-button" type="button" data-filter-keyword="gmail" title="Filter by gmail">gmail</button><button class="badge keyword-button" type="button" data-filter-keyword="google" title="Filter by google">google</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 8.4k</span>
+      <span class="fork-count">⑂ 696</span>
+      <span class="commit-count">⟳ 1.9k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 170">
+      <div class="activity-bar"><span style="width: 35%"></span></div>
+      <div class="activity-meta">
+        <span>94 commits / 30d</span>
+        <span>score 170</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="206" data-pushed="1789456603" data-name="clickclack" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clickclack" target="_blank" rel="noreferrer">clickclack</a></div><a class="repo-slug" href="https://github.com/openclaw/clickclack" target="_blank" rel="noreferrer">openclaw/clickclack</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">ClickClackClaw - The chat app with claws.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="agents" title="Filter by agents">agents</button><button class="badge keyword-button" type="button" data-filter-keyword="chat" title="Filter by chat">chat</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 206</span>
+      <span class="fork-count">⑂ 68</span>
+      <span class="commit-count">⟳ 862</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 131">
+      <div class="activity-bar"><span style="width: 27%"></span></div>
+      <div class="activity-meta">
+        <span>86 commits / 30d</span>
+        <span>score 131</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="1334" data-pushed="1789690156" data-name="imsg" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/imsg" target="_blank" rel="noreferrer">imsg</a></div><a class="repo-slug" href="https://github.com/openclaw/imsg" target="_blank" rel="noreferrer">openclaw/imsg</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">CLI for Apple&#x27;s Messages.app so your agent can send and receive text messages/iMessages.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="iMessage" title="Filter by iMessage">iMessage</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.3k</span>
+      <span class="fork-count">⑂ 181</span>
+      <span class="commit-count">⟳ 424</span>
+    </div>
+    <span class="last-updated">⏱ Sep 18, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 131">
+      <div class="activity-bar"><span style="width: 27%"></span></div>
+      <div class="activity-meta">
+        <span>64 commits / 30d</span>
+        <span>score 131</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="5016" data-pushed="1789457711" data-name="mcporter" data-cluster="agent-protocols-mcp">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/mcporter" target="_blank" rel="noreferrer">mcporter</a></div><a class="repo-slug" href="https://github.com/openclaw/mcporter" target="_blank" rel="noreferrer">openclaw/mcporter</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Call MCPs via TypeScript, masquerading as simple TypeScript API. Or package them as cli.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="MCP" title="Filter by MCP">MCP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="TypeScript" title="Filter by TypeScript">TypeScript</button><button class="badge keyword-button" type="button" data-filter-keyword="ts-api" title="Filter by ts-api">ts-api</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-agent-protocols-mcp">Agent Protocols, ACP &amp; MCP</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 5k</span>
+      <span class="fork-count">⑂ 343</span>
+      <span class="commit-count">⟳ 948</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 129">
+      <div class="activity-bar"><span style="width: 27%"></span></div>
+      <div class="activity-meta">
+        <span>59 commits / 30d</span>
+        <span>score 129</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="843" data-pushed="1789858987" data-name="discrawl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/discrawl" target="_blank" rel="noreferrer">discrawl</a></div><a class="repo-slug" href="https://github.com/openclaw/discrawl" target="_blank" rel="noreferrer">openclaw/discrawl</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">cli for Discord with sqlite backend<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Discord" title="Filter by Discord">Discord</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 843</span>
+      <span class="fork-count">⑂ 98</span>
+      <span class="commit-count">⟳ 517</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 127">
+      <div class="activity-bar"><span style="width: 27%"></span></div>
+      <div class="activity-meta">
+        <span>63 commits / 30d</span>
+        <span>score 127</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="1088" data-pushed="1789780750" data-name="agent-skills" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/agent-skills" target="_blank" rel="noreferrer">agent-skills</a></div><a class="repo-slug" href="https://github.com/openclaw/agent-skills" target="_blank" rel="noreferrer">openclaw/agent-skills</a></td>
+  <td><span class="tag tag-py">Python</span></td>
+  <td class="description-cell">Useful skills for agents and claws.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-skills-plugins-hub">Skills, Plugins &amp; Hub</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.1k</span>
+      <span class="fork-count">⑂ 102</span>
+      <span class="commit-count">⟳ 262</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 124">
+      <div class="activity-bar"><span style="width: 26%"></span></div>
+      <div class="activity-meta">
+        <span>58 commits / 30d</span>
+        <span>score 124</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="2747" data-pushed="1789454102" data-name="wacli" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/wacli" target="_blank" rel="noreferrer">wacli</a></div><a class="repo-slug" href="https://github.com/openclaw/wacli" target="_blank" rel="noreferrer">openclaw/wacli</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">WhatsApp CLI: sync, search, send<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="WhatsApp" title="Filter by WhatsApp">WhatsApp</button><button class="badge keyword-button" type="button" data-filter-keyword="go" title="Filter by go">go</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2.7k</span>
+      <span class="fork-count">⑂ 344</span>
+      <span class="commit-count">⟳ 420</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 111">
+      <div class="activity-bar"><span style="width: 23%"></span></div>
+      <div class="activity-meta">
+        <span>45 commits / 30d</span>
+        <span>score 111</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="1262" data-pushed="1789451634" data-name="lobster" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/lobster" target="_blank" rel="noreferrer">lobster</a></div><a class="repo-slug" href="https://github.com/openclaw/lobster" target="_blank" rel="noreferrer">openclaw/lobster</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Lobster is a Openclaw-native workflow shell: a typed, local-first “macro engine” that turns skills/tools into composable pipelines and safe automations—and lets Openclaw call those workflows in one step.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-skills-plugins-hub">Skills, Plugins &amp; Hub</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.3k</span>
+      <span class="fork-count">⑂ 287</span>
+      <span class="commit-count">⟳ 180</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 111">
+      <div class="activity-bar"><span style="width: 23%"></span></div>
+      <div class="activity-meta">
+        <span>50 commits / 30d</span>
+        <span>score 111</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="235" data-pushed="1789464577" data-name="slacrawl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/slacrawl" target="_blank" rel="noreferrer">slacrawl</a></div><a class="repo-slug" href="https://github.com/openclaw/slacrawl" target="_blank" rel="noreferrer">openclaw/slacrawl</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">cli terminal app for slack with sqlite backend<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Slack" title="Filter by Slack">Slack</button><button class="badge keyword-button" type="button" data-filter-keyword="openclaw" title="Filter by openclaw">openclaw</button><button class="badge keyword-button" type="button" data-filter-keyword="slack-api" title="Filter by slack-api">slack-api</button><button class="badge keyword-button" type="button" data-filter-keyword="slackbot" title="Filter by slackbot">slackbot</button><button class="badge keyword-button" type="button" data-filter-keyword="terminal" title="Filter by terminal">terminal</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 235</span>
+      <span class="fork-count">⑂ 27</span>
+      <span class="commit-count">⟳ 361</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 101">
+      <div class="activity-bar"><span style="width: 21%"></span></div>
+      <div class="activity-meta">
+        <span>57 commits / 30d</span>
+        <span>score 101</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="296" data-pushed="1789780956" data-name="tachikoma" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/Tachikoma" target="_blank" rel="noreferrer">Tachikoma</a></div><a class="repo-slug" href="https://github.com/openclaw/Tachikoma" target="_blank" rel="noreferrer">openclaw/Tachikoma</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">One interface, every AI model. A Swift SDK to interface with AI providers.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Swift" title="Filter by Swift">Swift</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="sdk" title="Filter by sdk">sdk</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 296</span>
+      <span class="fork-count">⑂ 51</span>
+      <span class="commit-count">⟳ 631</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 96">
+      <div class="activity-bar"><span style="width: 20%"></span></div>
+      <div class="activity-meta">
+        <span>42 commits / 30d</span>
+        <span>score 96</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="710" data-pushed="1789317542" data-name="nix-openclaw" data-cluster="packaging-nix-infra">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/nix-openclaw" target="_blank" rel="noreferrer">nix-openclaw</a></div><a class="repo-slug" href="https://github.com/openclaw/nix-openclaw" target="_blank" rel="noreferrer">openclaw/nix-openclaw</a></td>
+  <td><span class="tag tag-nix">Nix</span></td>
+  <td class="description-cell">Packages OpenClaw for nix.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Nix" title="Filter by Nix">Nix</button><button class="badge keyword-button" type="button" data-filter-keyword="clawdis" title="Filter by clawdis">clawdis</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-packaging-nix-infra">Packaging, Nix &amp; Infrastructure</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 710</span>
+      <span class="fork-count">⑂ 226</span>
+      <span class="commit-count">⟳ 1.4k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 13, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 93">
+      <div class="activity-bar"><span style="width: 19%"></span></div>
+      <div class="activity-meta">
+        <span>41 commits / 30d</span>
+        <span>score 93</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="259" data-pushed="1789457827" data-name="spogo" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/spogo" target="_blank" rel="noreferrer">spogo</a></div><a class="repo-slug" href="https://github.com/openclaw/spogo" target="_blank" rel="noreferrer">openclaw/spogo</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">🎧 Spotify, but make it terminal. Power CLI using web cookies.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 259</span>
+      <span class="fork-count">⑂ 40</span>
+      <span class="commit-count">⟳ 139</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 87">
+      <div class="activity-bar"><span style="width: 18%"></span></div>
+      <div class="activity-meta">
+        <span>41 commits / 30d</span>
+        <span>score 87</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="812" data-pushed="1789455498" data-name="clawpatch" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawpatch" target="_blank" rel="noreferrer">clawpatch</a></div><a class="repo-slug" href="https://github.com/openclaw/clawpatch" target="_blank" rel="noreferrer">openclaw/clawpatch</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Review code. Patch bugs. Land PRs.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Review" title="Filter by Review">Review</button><button class="badge keyword-button" type="button" data-filter-keyword="bot" title="Filter by bot">bot</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-review-automation">Review, Sweeping &amp; Automation</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 812</span>
+      <span class="fork-count">⑂ 120</span>
+      <span class="commit-count">⟳ 527</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 86">
+      <div class="activity-bar"><span style="width: 18%"></span></div>
+      <div class="activity-meta">
+        <span>30 commits / 30d</span>
+        <span>score 86</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="323" data-pushed="1789456311" data-name="axorcist" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/AXorcist" target="_blank" rel="noreferrer">AXorcist</a></div><a class="repo-slug" href="https://github.com/openclaw/AXorcist" target="_blank" rel="noreferrer">openclaw/AXorcist</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">AXorcist • Swift wrapper for macOS Accessibility—chainable, fuzzy-matched queries that read, click, and inspect any UI. The power of Swift compels your UI to obey! <div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="macOS" title="Filter by macOS">macOS</button><button class="badge keyword-button" type="button" data-filter-keyword="Swift" title="Filter by Swift">Swift</button><button class="badge keyword-button" type="button" data-filter-keyword="accessibility" title="Filter by accessibility">accessibility</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 323</span>
+      <span class="fork-count">⑂ 33</span>
+      <span class="commit-count">⟳ 212</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 78">
+      <div class="activity-bar"><span style="width: 16%"></span></div>
+      <div class="activity-meta">
+        <span>31 commits / 30d</span>
+        <span>score 78</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="256" data-pushed="1789457058" data-name="goplaces" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/goplaces" target="_blank" rel="noreferrer">goplaces</a></div><a class="repo-slug" href="https://github.com/openclaw/goplaces" target="_blank" rel="noreferrer">openclaw/goplaces</a></td>
+  <td><span class="tag tag-shell">Shell</span></td>
+  <td class="description-cell">Modern Google Places CLI in Go<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="go" title="Filter by go">go</button><button class="badge keyword-button" type="button" data-filter-keyword="google" title="Filter by google">google</button><button class="badge keyword-button" type="button" data-filter-keyword="locations" title="Filter by locations">locations</button><button class="badge keyword-button" type="button" data-filter-keyword="places" title="Filter by places">places</button><button class="badge keyword-button" type="button" data-filter-keyword="reviews" title="Filter by reviews">reviews</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 256</span>
+      <span class="fork-count">⑂ 35</span>
+      <span class="commit-count">⟳ 123</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 77">
+      <div class="activity-bar"><span style="width: 16%"></span></div>
+      <div class="activity-meta">
+        <span>32 commits / 30d</span>
+        <span>score 77</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="374" data-pushed="1789461032" data-name="remindctl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/remindctl" target="_blank" rel="noreferrer">remindctl</a></div><a class="repo-slug" href="https://github.com/openclaw/remindctl" target="_blank" rel="noreferrer">openclaw/remindctl</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">cli for Apple Reminders app<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-messaging-workspace-clis">Messaging, Workspace &amp; Social CLIs</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 374</span>
+      <span class="fork-count">⑂ 79</span>
+      <span class="commit-count">⟳ 88</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 77">
+      <div class="activity-bar"><span style="width: 16%"></span></div>
+      <div class="activity-meta">
+        <span>27 commits / 30d</span>
+        <span>score 77</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="233" data-pushed="1789530603" data-name="crabfleet" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/crabfleet" target="_blank" rel="noreferrer">crabfleet</a></div><a class="repo-slug" href="https://github.com/openclaw/crabfleet" target="_blank" rel="noreferrer">openclaw/crabfleet</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">Mission control for agent runs.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="agent" title="Filter by agent">agent</button><button class="badge keyword-button" type="button" data-filter-keyword="fleet" title="Filter by fleet">fleet</button><button class="badge keyword-button" type="button" data-filter-keyword="management" title="Filter by management">management</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-native-apps-desktop">macOS, Windows &amp; Native Apps</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 233</span>
+      <span class="fork-count">⑂ 37</span>
+      <span class="commit-count">⟳ 648</span>
+    </div>
+    <span class="last-updated">⏱ Sep 16, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 71">
+      <div class="activity-bar"><span style="width: 15%"></span></div>
+      <div class="activity-meta">
+        <span>25 commits / 30d</span>
+        <span>score 71</span>
+      </div>
+    </div>
+  </td>
+</tr>
+<tr data-stars="599" data-pushed="1789528771" data-name="openclaw-ansible" data-cluster="packaging-nix-infra">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw-ansible" target="_blank" rel="noreferrer">openclaw-ansible</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw-ansible" target="_blank" rel="noreferrer">openclaw/openclaw-ansible</a></td>
+  <td><span class="tag tag-shell">Shell</span></td>
+  <td class="description-cell">Automated, hardened Clawdbot installation with Tailscale VPN, UFW firewall, and Docker isolation<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Ansible" title="Filter by Ansible">Ansible</button></div></td>
+  <td><a class="cluster-pill cluster-link" href="#cluster-packaging-nix-infra">Packaging, Nix &amp; Infrastructure</a></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 599</span>
+      <span class="fork-count">⑂ 253</span>
+      <span class="commit-count">⟳ 119</span>
+    </div>
+    <span class="last-updated">⏱ Sep 16, 2026</span>
+    <div class="activity-block" aria-label="Recent activity score 63">
+      <div class="activity-bar"><span style="width: 13%"></span></div>
+      <div class="activity-meta">
+        <span>6 commits / 30d</span>
+        <span>score 63</span>
+      </div>
+    </div>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-core-runtime-assistant" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-orange"></span>Core Runtime &amp; Assistant</h2>
+      <p>The OpenClaw personal assistant, gateway, onboard flow, and the lobster that actually does things. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">1 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="390096" data-pushed="1789858985" data-name="openclaw" data-cluster="core-runtime-assistant">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer">openclaw</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer">openclaw/openclaw</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">The AI that really does things. Any OS. Any Platform. The lobster way. 🦞 <div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="assistant" title="Filter by assistant">assistant</button><button class="badge keyword-button" type="button" data-filter-keyword="crustacean" title="Filter by crustacean">crustacean</button><button class="badge keyword-button" type="button" data-filter-keyword="molty" title="Filter by molty">molty</button><button class="badge keyword-button" type="button" data-filter-keyword="own-your-data" title="Filter by own-your-data">own-your-data</button><button class="badge keyword-button" type="button" data-filter-keyword="personal" title="Filter by personal">personal</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 390k</span>
+      <span class="fork-count">⑂ 82k</span>
+      <span class="commit-count">⟳ 96.9k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-skills-plugins-hub" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-purple"></span>Skills, Plugins &amp; Hub</h2>
+      <p>Skill registries, community plugins, workflow shells, and the ClawHub directory. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">3 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="9430" data-pushed="1789781148" data-name="clawhub" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawhub" target="_blank" rel="noreferrer">clawhub</a></div><a class="repo-slug" href="https://github.com/openclaw/clawhub" target="_blank" rel="noreferrer">openclaw/clawhub</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Skill + Plugin Registry for OpenClaw<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button><button class="badge keyword-button" type="button" data-filter-keyword="Plugins" title="Filter by Plugins">Plugins</button><button class="badge keyword-button" type="button" data-filter-keyword="directory" title="Filter by directory">directory</button><button class="badge keyword-button" type="button" data-filter-keyword="skill" title="Filter by skill">skill</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 9.4k</span>
+      <span class="fork-count">⑂ 1.5k</span>
+      <span class="commit-count">⟳ 2.7k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="1262" data-pushed="1789451634" data-name="lobster" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/lobster" target="_blank" rel="noreferrer">lobster</a></div><a class="repo-slug" href="https://github.com/openclaw/lobster" target="_blank" rel="noreferrer">openclaw/lobster</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Lobster is a Openclaw-native workflow shell: a typed, local-first “macro engine” that turns skills/tools into composable pipelines and safe automations—and lets Openclaw call those workflows in one step.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.3k</span>
+      <span class="fork-count">⑂ 287</span>
+      <span class="commit-count">⟳ 180</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="1088" data-pushed="1789780750" data-name="agent-skills" data-cluster="skills-plugins-hub">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/agent-skills" target="_blank" rel="noreferrer">agent-skills</a></div><a class="repo-slug" href="https://github.com/openclaw/agent-skills" target="_blank" rel="noreferrer">openclaw/agent-skills</a></td>
+  <td><span class="tag tag-py">Python</span></td>
+  <td class="description-cell">Useful skills for agents and claws.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Skills" title="Filter by Skills">Skills</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.1k</span>
+      <span class="fork-count">⑂ 102</span>
+      <span class="commit-count">⟳ 262</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-agent-protocols-mcp" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-cyan"></span>Agent Protocols, ACP &amp; MCP</h2>
+      <p>Agent Client Protocol sessions, MCP TypeScript APIs, and headless protocol clients. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">2 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="5016" data-pushed="1789457711" data-name="mcporter" data-cluster="agent-protocols-mcp">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/mcporter" target="_blank" rel="noreferrer">mcporter</a></div><a class="repo-slug" href="https://github.com/openclaw/mcporter" target="_blank" rel="noreferrer">openclaw/mcporter</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Call MCPs via TypeScript, masquerading as simple TypeScript API. Or package them as cli.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="MCP" title="Filter by MCP">MCP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="TypeScript" title="Filter by TypeScript">TypeScript</button><button class="badge keyword-button" type="button" data-filter-keyword="ts-api" title="Filter by ts-api">ts-api</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 5k</span>
+      <span class="fork-count">⑂ 343</span>
+      <span class="commit-count">⟳ 948</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="3263" data-pushed="1789838002" data-name="acpx" data-cluster="agent-protocols-mcp">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/acpx" target="_blank" rel="noreferrer">acpx</a></div><a class="repo-slug" href="https://github.com/openclaw/acpx" target="_blank" rel="noreferrer">openclaw/acpx</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Headless CLI client for stateful Agent Client Protocol (ACP) sessions<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="ACP" title="Filter by ACP">ACP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="agentclientprotocol" title="Filter by agentclientprotocol">agentclientprotocol</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 3.3k</span>
+      <span class="fork-count">⑂ 335</span>
+      <span class="commit-count">⟳ 613</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-review-automation" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-green"></span>Review, Sweeping &amp; Automation</h2>
+      <p>PR review bots, issue sweepers, remote test runners, and maintainer automation. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">3 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="1987" data-pushed="1789831709" data-name="clawsweeper" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawsweeper" target="_blank" rel="noreferrer">clawsweeper</a></div><a class="repo-slug" href="https://github.com/openclaw/clawsweeper" target="_blank" rel="noreferrer">openclaw/clawsweeper</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">ClawSweeper scans all issues and PRs and suggest what we can close, and why. It runs every PR / Issue once a week.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="bot" title="Filter by bot">bot</button><button class="badge keyword-button" type="button" data-filter-keyword="openclaw" title="Filter by openclaw">openclaw</button><button class="badge keyword-button" type="button" data-filter-keyword="review" title="Filter by review">review</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2k</span>
+      <span class="fork-count">⑂ 303</span>
+      <span class="commit-count">⟳ 7.1k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="1408" data-pushed="1789835611" data-name="crabbox" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/crabbox" target="_blank" rel="noreferrer">crabbox</a></div><a class="repo-slug" href="https://github.com/openclaw/crabbox" target="_blank" rel="noreferrer">openclaw/crabbox</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">Crabbox: warm a box, sync the diff, run the suite.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="agent-skills" title="Filter by agent-skills">agent-skills</button><button class="badge keyword-button" type="button" data-filter-keyword="herdr-plugin" title="Filter by herdr-plugin">herdr-plugin</button><button class="badge keyword-button" type="button" data-filter-keyword="remote-test-runner" title="Filter by remote-test-runner">remote-test-runner</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.4k</span>
+      <span class="fork-count">⑂ 182</span>
+      <span class="commit-count">⟳ 3k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="812" data-pushed="1789455498" data-name="clawpatch" data-cluster="review-automation">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clawpatch" target="_blank" rel="noreferrer">clawpatch</a></div><a class="repo-slug" href="https://github.com/openclaw/clawpatch" target="_blank" rel="noreferrer">openclaw/clawpatch</a></td>
+  <td><span class="tag tag-ts">TypeScript</span></td>
+  <td class="description-cell">Review code. Patch bugs. Land PRs.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Review" title="Filter by Review">Review</button><button class="badge keyword-button" type="button" data-filter-keyword="bot" title="Filter by bot">bot</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 812</span>
+      <span class="fork-count">⑂ 120</span>
+      <span class="commit-count">⟳ 527</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-messaging-workspace-clis" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-yellow"></span>Messaging, Workspace &amp; Social CLIs</h2>
+      <p>WhatsApp, iMessage, Discord, Slack, Google Workspace, reminders, and other agent-facing CLIs. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">9 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="8428" data-pushed="1789453177" data-name="gogcli" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/gogcli" target="_blank" rel="noreferrer">gogcli</a></div><a class="repo-slug" href="https://github.com/openclaw/gogcli" target="_blank" rel="noreferrer">openclaw/gogcli</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">Google Workspace in your terminal.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="gcal" title="Filter by gcal">gcal</button><button class="badge keyword-button" type="button" data-filter-keyword="gcontacts" title="Filter by gcontacts">gcontacts</button><button class="badge keyword-button" type="button" data-filter-keyword="gdrive" title="Filter by gdrive">gdrive</button><button class="badge keyword-button" type="button" data-filter-keyword="gmail" title="Filter by gmail">gmail</button><button class="badge keyword-button" type="button" data-filter-keyword="google" title="Filter by google">google</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 8.4k</span>
+      <span class="fork-count">⑂ 696</span>
+      <span class="commit-count">⟳ 1.9k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="2747" data-pushed="1789454102" data-name="wacli" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/wacli" target="_blank" rel="noreferrer">wacli</a></div><a class="repo-slug" href="https://github.com/openclaw/wacli" target="_blank" rel="noreferrer">openclaw/wacli</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">WhatsApp CLI: sync, search, send<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="WhatsApp" title="Filter by WhatsApp">WhatsApp</button><button class="badge keyword-button" type="button" data-filter-keyword="go" title="Filter by go">go</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2.7k</span>
+      <span class="fork-count">⑂ 344</span>
+      <span class="commit-count">⟳ 420</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="1334" data-pushed="1789690156" data-name="imsg" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/imsg" target="_blank" rel="noreferrer">imsg</a></div><a class="repo-slug" href="https://github.com/openclaw/imsg" target="_blank" rel="noreferrer">openclaw/imsg</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">CLI for Apple&#x27;s Messages.app so your agent can send and receive text messages/iMessages.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="iMessage" title="Filter by iMessage">iMessage</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 1.3k</span>
+      <span class="fork-count">⑂ 181</span>
+      <span class="commit-count">⟳ 424</span>
+    </div>
+    <span class="last-updated">⏱ Sep 18, 2026</span>
+  </td>
+</tr>
+<tr data-stars="843" data-pushed="1789858987" data-name="discrawl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/discrawl" target="_blank" rel="noreferrer">discrawl</a></div><a class="repo-slug" href="https://github.com/openclaw/discrawl" target="_blank" rel="noreferrer">openclaw/discrawl</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">cli for Discord with sqlite backend<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Discord" title="Filter by Discord">Discord</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 843</span>
+      <span class="fork-count">⑂ 98</span>
+      <span class="commit-count">⟳ 517</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="374" data-pushed="1789461032" data-name="remindctl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/remindctl" target="_blank" rel="noreferrer">remindctl</a></div><a class="repo-slug" href="https://github.com/openclaw/remindctl" target="_blank" rel="noreferrer">openclaw/remindctl</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">cli for Apple Reminders app<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 374</span>
+      <span class="fork-count">⑂ 79</span>
+      <span class="commit-count">⟳ 88</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="259" data-pushed="1789457827" data-name="spogo" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/spogo" target="_blank" rel="noreferrer">spogo</a></div><a class="repo-slug" href="https://github.com/openclaw/spogo" target="_blank" rel="noreferrer">openclaw/spogo</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">🎧 Spotify, but make it terminal. Power CLI using web cookies.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 259</span>
+      <span class="fork-count">⑂ 40</span>
+      <span class="commit-count">⟳ 139</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="256" data-pushed="1789457058" data-name="goplaces" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/goplaces" target="_blank" rel="noreferrer">goplaces</a></div><a class="repo-slug" href="https://github.com/openclaw/goplaces" target="_blank" rel="noreferrer">openclaw/goplaces</a></td>
+  <td><span class="tag tag-shell">Shell</span></td>
+  <td class="description-cell">Modern Google Places CLI in Go<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="go" title="Filter by go">go</button><button class="badge keyword-button" type="button" data-filter-keyword="google" title="Filter by google">google</button><button class="badge keyword-button" type="button" data-filter-keyword="locations" title="Filter by locations">locations</button><button class="badge keyword-button" type="button" data-filter-keyword="places" title="Filter by places">places</button><button class="badge keyword-button" type="button" data-filter-keyword="reviews" title="Filter by reviews">reviews</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 256</span>
+      <span class="fork-count">⑂ 35</span>
+      <span class="commit-count">⟳ 123</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="235" data-pushed="1789464577" data-name="slacrawl" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/slacrawl" target="_blank" rel="noreferrer">slacrawl</a></div><a class="repo-slug" href="https://github.com/openclaw/slacrawl" target="_blank" rel="noreferrer">openclaw/slacrawl</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">cli terminal app for slack with sqlite backend<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="Slack" title="Filter by Slack">Slack</button><button class="badge keyword-button" type="button" data-filter-keyword="openclaw" title="Filter by openclaw">openclaw</button><button class="badge keyword-button" type="button" data-filter-keyword="slack-api" title="Filter by slack-api">slack-api</button><button class="badge keyword-button" type="button" data-filter-keyword="slackbot" title="Filter by slackbot">slackbot</button><button class="badge keyword-button" type="button" data-filter-keyword="terminal" title="Filter by terminal">terminal</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 235</span>
+      <span class="fork-count">⑂ 27</span>
+      <span class="commit-count">⟳ 361</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="206" data-pushed="1789456603" data-name="clickclack" data-cluster="messaging-workspace-clis">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/clickclack" target="_blank" rel="noreferrer">clickclack</a></div><a class="repo-slug" href="https://github.com/openclaw/clickclack" target="_blank" rel="noreferrer">openclaw/clickclack</a></td>
+  <td><span class="tag tag-go">Go</span></td>
+  <td class="description-cell">ClickClackClaw - The chat app with claws.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="agents" title="Filter by agents">agents</button><button class="badge keyword-button" type="button" data-filter-keyword="chat" title="Filter by chat">chat</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 206</span>
+      <span class="fork-count">⑂ 68</span>
+      <span class="commit-count">⟳ 862</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-native-apps-desktop" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-red"></span>macOS, Windows &amp; Native Apps</h2>
+      <p>Windows companion nodes, macOS screenshot/MCP tools, accessibility wrappers, and fleet control. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">5 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="5184" data-pushed="1789780951" data-name="peekaboo" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/Peekaboo" target="_blank" rel="noreferrer">Peekaboo</a></div><a class="repo-slug" href="https://github.com/openclaw/Peekaboo" target="_blank" rel="noreferrer">openclaw/Peekaboo</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">Peekaboo is a macOS CLI &amp; optional MCP server that enables AI agents to capture screenshots of applications, or the entire system, with optional visual question answering through local or remote AI models.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="MCP" title="Filter by MCP">MCP</button><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="macOS" title="Filter by macOS">macOS</button><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="screenshots" title="Filter by screenshots">screenshots</button><button class="badge keyword-button" type="button" data-filter-keyword="swift" title="Filter by swift">swift</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 5.2k</span>
+      <span class="fork-count">⑂ 399</span>
+      <span class="commit-count">⟳ 3.5k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="2120" data-pushed="1789855725" data-name="openclaw-windows-node" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw-windows-node" target="_blank" rel="noreferrer">openclaw-windows-node</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw-windows-node" target="_blank" rel="noreferrer">openclaw/openclaw-windows-node</a></td>
+  <td><span class="tag tag-csharp">C#</span></td>
+  <td class="description-cell">Windows companion suite for OpenClaw<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Windows" title="Filter by Windows">Windows</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 2.1k</span>
+      <span class="fork-count">⑂ 295</span>
+      <span class="commit-count">⟳ 1.4k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="323" data-pushed="1789456311" data-name="axorcist" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/AXorcist" target="_blank" rel="noreferrer">AXorcist</a></div><a class="repo-slug" href="https://github.com/openclaw/AXorcist" target="_blank" rel="noreferrer">openclaw/AXorcist</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">AXorcist • Swift wrapper for macOS Accessibility—chainable, fuzzy-matched queries that read, click, and inspect any UI. The power of Swift compels your UI to obey! <div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="CLI" title="Filter by CLI">CLI</button><button class="badge keyword-button" type="button" data-filter-keyword="macOS" title="Filter by macOS">macOS</button><button class="badge keyword-button" type="button" data-filter-keyword="Swift" title="Filter by Swift">Swift</button><button class="badge keyword-button" type="button" data-filter-keyword="accessibility" title="Filter by accessibility">accessibility</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 323</span>
+      <span class="fork-count">⑂ 33</span>
+      <span class="commit-count">⟳ 212</span>
+    </div>
+    <span class="last-updated">⏱ Sep 15, 2026</span>
+  </td>
+</tr>
+<tr data-stars="296" data-pushed="1789780956" data-name="tachikoma" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/Tachikoma" target="_blank" rel="noreferrer">Tachikoma</a></div><a class="repo-slug" href="https://github.com/openclaw/Tachikoma" target="_blank" rel="noreferrer">openclaw/Tachikoma</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">One interface, every AI model. A Swift SDK to interface with AI providers.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Swift" title="Filter by Swift">Swift</button><button class="badge keyword-button" type="button" data-filter-keyword="ai" title="Filter by ai">ai</button><button class="badge keyword-button" type="button" data-filter-keyword="sdk" title="Filter by sdk">sdk</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 296</span>
+      <span class="fork-count">⑂ 51</span>
+      <span class="commit-count">⟳ 631</span>
+    </div>
+    <span class="last-updated">⏱ Sep 19, 2026</span>
+  </td>
+</tr>
+<tr data-stars="233" data-pushed="1789530603" data-name="crabfleet" data-cluster="native-apps-desktop">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/crabfleet" target="_blank" rel="noreferrer">crabfleet</a></div><a class="repo-slug" href="https://github.com/openclaw/crabfleet" target="_blank" rel="noreferrer">openclaw/crabfleet</a></td>
+  <td><span class="tag tag-swift">Swift</span></td>
+  <td class="description-cell">Mission control for agent runs.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="Agents" title="Filter by Agents">Agents</button><button class="badge keyword-button" type="button" data-filter-keyword="agent" title="Filter by agent">agent</button><button class="badge keyword-button" type="button" data-filter-keyword="fleet" title="Filter by fleet">fleet</button><button class="badge keyword-button" type="button" data-filter-keyword="management" title="Filter by management">management</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 233</span>
+      <span class="fork-count">⑂ 37</span>
+      <span class="commit-count">⟳ 648</span>
+    </div>
+    <span class="last-updated">⏱ Sep 16, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section class="repo-section" id="cluster-packaging-nix-infra" data-section>
+  <div class="section-header">
+    <div>
+      <h2><span class="section-mark section-mark-blue"></span>Packaging, Nix &amp; Infrastructure</h2>
+      <p>Nix packages, Ansible installers, Homebrew taps, and host/infra modules for running OpenClaw. Showing all qualifying repositories in this cluster by stars.</p>
+    </div>
+    <span class="count-pill">2 repos</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-repository">
+        <col class="col-language">
+        <col class="col-description">
+        <col class="col-github">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Language</th>
+          <th>Description</th>
+          <th>GitHub</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-stars="710" data-pushed="1789317542" data-name="nix-openclaw" data-cluster="packaging-nix-infra">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/nix-openclaw" target="_blank" rel="noreferrer">nix-openclaw</a></div><a class="repo-slug" href="https://github.com/openclaw/nix-openclaw" target="_blank" rel="noreferrer">openclaw/nix-openclaw</a></td>
+  <td><span class="tag tag-nix">Nix</span></td>
+  <td class="description-cell">Packages OpenClaw for nix.<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Nix" title="Filter by Nix">Nix</button><button class="badge keyword-button" type="button" data-filter-keyword="clawdis" title="Filter by clawdis">clawdis</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 710</span>
+      <span class="fork-count">⑂ 226</span>
+      <span class="commit-count">⟳ 1.4k</span>
+    </div>
+    <span class="last-updated">⏱ Sep 13, 2026</span>
+  </td>
+</tr>
+<tr data-stars="599" data-pushed="1789528771" data-name="openclaw-ansible" data-cluster="packaging-nix-infra">
+  <td><div class="repo-name"><img src="https://github.com/openclaw.png?size=32" alt="" class="avatar"><a href="https://github.com/openclaw/openclaw-ansible" target="_blank" rel="noreferrer">openclaw-ansible</a></div><a class="repo-slug" href="https://github.com/openclaw/openclaw-ansible" target="_blank" rel="noreferrer">openclaw/openclaw-ansible</a></td>
+  <td><span class="tag tag-shell">Shell</span></td>
+  <td class="description-cell">Automated, hardened Clawdbot installation with Tailscale VPN, UFW firewall, and Docker isolation<div class="topic-row"><button class="badge keyword-button" type="button" data-filter-keyword="OpenClaw" title="Filter by OpenClaw">OpenClaw</button><button class="badge keyword-button" type="button" data-filter-keyword="Ansible" title="Filter by Ansible">Ansible</button></div></td>
+  <td class="github-cell">
+    <div class="gh-stats">
+      <span class="star-count">★ 599</span>
+      <span class="fork-count">⑂ 253</span>
+      <span class="commit-count">⟳ 119</span>
+    </div>
+    <span class="last-updated">⏱ Sep 16, 2026</span>
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+
+  <footer class="footer">
+    <p style="margin-bottom: 10px;">Useful links:
+      <a class="gh-link" href="https://openclaw.ai/" target="_blank" rel="noreferrer" style="display: inline; margin-left: 6px;">openclaw.ai</a>
+      <span style="margin: 0 4px;">·</span>
+      <a class="gh-link" href="https://docs.openclaw.ai/" target="_blank" rel="noreferrer" style="display: inline;">Docs</a>
+      <span style="margin: 0 4px;">·</span>
+      <a class="gh-link" href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer" style="display: inline;">openclaw/openclaw</a>
+    </p>
+    <p style="text-align: center;">Generated from the GitHub API · Last updated: <span id="last-updated-date">2026-09-19 23:03 UTC</span></p>
+  </footer>
+
+<script>
+  const searchInput = document.getElementById('global-table-search');
+  const clearButton = document.getElementById('global-search-clear');
+  const sortStars = document.getElementById('sort-stars');
+  const sortFresh = document.getElementById('sort-fresh');
+
+  function allRows() {
+    return Array.from(document.querySelectorAll('tbody tr'));
+  }
+
+  function applySearch() {
+    const query = searchInput.value.trim().toLowerCase();
+    let visibleRows = 0;
+    document.querySelectorAll('[data-section]').forEach(section => {
+      let sectionVisible = false;
+      section.querySelectorAll('tbody tr').forEach(row => {
+        const match = !query || row.textContent.toLowerCase().includes(query);
+        row.classList.toggle('hidden', !match);
+        if (match) {
+          sectionVisible = true;
+          visibleRows += 1;
+        }
+      });
+      section.classList.toggle('hidden', !sectionVisible);
+    });
+    clearButton.disabled = !query;
+    if (query && visibleRows === 0) {
+      document.querySelectorAll('[data-section], tbody tr').forEach(el => el.classList.remove('hidden'));
+    }
+  }
+
+  function sortTables(kind) {
+    const attr = kind === 'fresh' ? 'pushed' : 'stars';
+    document.querySelectorAll('tbody').forEach(tbody => {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((a, b) => Number(b.dataset[attr] || 0) - Number(a.dataset[attr] || 0));
+      rows.forEach(row => tbody.appendChild(row));
+    });
+    sortStars.classList.toggle('active', kind === 'stars');
+    sortFresh.classList.toggle('active', kind === 'fresh');
+    applySearch();
+  }
+
+  searchInput.addEventListener('input', applySearch);
+  clearButton.addEventListener('click', () => {
+    searchInput.value = '';
+    applySearch();
+    searchInput.focus();
+  });
+  document.addEventListener('click', event => {
+    const keyword = event.target.closest('[data-filter-keyword]');
+    if (!keyword) return;
+    const value = keyword.dataset.filterKeyword || keyword.textContent.trim();
+    searchInput.value = searchInput.value.trim().toLowerCase() === value.trim().toLowerCase() ? '' : value;
+    applySearch();
+    searchInput.focus({ preventScroll: true });
+  });
+  sortStars.addEventListener('click', () => sortTables('stars'));
+  sortFresh.addEventListener('click', () => sortTables('fresh'));
+  sortTables('fresh');
+</script>
+</body>
+</html>
