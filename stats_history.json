@@ -1990,7 +1990,7 @@
         },
         "openclaw/Peekaboo": {
           "forks": 407,
-          "pushed_at": "2026-10-04T07:15:57Z",
+          "pushed_at": "2026-10-04T11:55:31Z",
           "stars": 5239
         },
         "openclaw/Tachikoma": {
@@ -2031,7 +2031,7 @@
         "openclaw/crabbox": {
           "forks": 190,
           "pushed_at": "2026-10-04T02:19:34Z",
-          "stars": 1442
+          "stars": 1443
         },
         "openclaw/crabfleet": {
           "forks": 39,
@@ -2056,7 +2056,7 @@
         "openclaw/imsg": {
           "forks": 184,
           "pushed_at": "2026-10-01T06:21:53Z",
-          "stars": 1349
+          "stars": 1351
         },
         "openclaw/lobster": {
           "forks": 290,
@@ -2066,7 +2066,7 @@
         "openclaw/mcporter": {
           "forks": 347,
           "pushed_at": "2026-10-01T18:43:11Z",
-          "stars": 5049
+          "stars": 5050
         },
         "openclaw/nix-openclaw": {
           "forks": 228,
@@ -2074,9 +2074,9 @@
           "stars": 710
         },
         "openclaw/openclaw": {
-          "forks": 82251,
-          "pushed_at": "2026-10-04T08:02:40Z",
-          "stars": 391264
+          "forks": 82252,
+          "pushed_at": "2026-10-04T12:15:22Z",
+          "stars": 391279
         },
         "openclaw/openclaw-ansible": {
           "forks": 256,
@@ -2085,8 +2085,8 @@
         },
         "openclaw/openclaw-enterprise": {
           "forks": 53,
-          "pushed_at": "2026-10-04T07:55:07Z",
-          "stars": 336
+          "pushed_at": "2026-10-04T12:06:19Z",
+          "stars": 338
         },
         "openclaw/openclaw-windows-node": {
           "forks": 304,

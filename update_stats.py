@@ -490,6 +490,7 @@ def cluster_repo(repo: dict[str, Any]) -> Cluster:
     ).lower()
     name_overrides = {
         "openclaw": "core-runtime-assistant",
+        "openclaw-enterprise": "core-runtime-assistant",
         "clawhub": "skills-plugins-hub",
         "agent-skills": "skills-plugins-hub",
         "lobster": "skills-plugins-hub",
@@ -502,6 +503,7 @@ def cluster_repo(repo: dict[str, Any]) -> Cluster:
         "imsg": "messaging-workspace-clis",
         "discrawl": "messaging-workspace-clis",
         "slacrawl": "messaging-workspace-clis",
+        "wacrawl": "messaging-workspace-clis",
         "gogcli": "messaging-workspace-clis",
         "remindctl": "messaging-workspace-clis",
         "spogo": "messaging-workspace-clis",
