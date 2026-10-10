@@ -1,15 +1,19 @@
 # openclaw-repos
 
 `openclaw-repos` is a static catalog of active repositories from OpenClaw's
-`openclaw` GitHub organization. It groups public repositories by purpose and
-keeps GitHub metadata fresh with a scheduled update script.
+`openclaw` GitHub organization and the `steipete` GitHub user. It groups public
+repositories by purpose and keeps GitHub metadata fresh with a scheduled update
+script.
 
 Included repositories match this filter:
 
-- GitHub org: `openclaw`
+- GitHub owner: `openclaw` or `steipete`
 - More than 200 stars
 - Non-fork and non-archived
 - Last pushed within the previous three calendar months
+
+Repositories from both owners are combined into one traction table and the same
+technology clusters.
 
 The page is tuned to surface repositories with both recent traction and broad
 audience: the lead table blends recent commits, freshness, stars, and forks,
@@ -36,7 +40,8 @@ python3 update_stats.py
 ```
 
 The script fetches stars, forks, total commits, recent commits, last commit
-dates, primary language, topics, and descriptions from GitHub. It rewrites the
+dates, primary language, topics, and descriptions from GitHub for both
+`openclaw` and `steipete`. It combines those repositories, then rewrites the
 fresh-traction table, the cluster tables, and `stats_history.json`.
 
 For local runs, authenticate with the GitHub CLI or set `GITHUB_TOKEN`:

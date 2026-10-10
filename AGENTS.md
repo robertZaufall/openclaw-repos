@@ -5,9 +5,9 @@ This file is the working guide for agents editing `openclaw-repos`.
 ## What this repo is
 
 `openclaw-repos` is a single-page static catalog of public repositories from
-OpenClaw's `openclaw` GitHub organization. It follows a
-lightweight static-project shape: no framework, no package manager, and no
-build step.
+OpenClaw's `openclaw` GitHub organization and Peter Steinberger's `steipete`
+GitHub user. It follows a lightweight static-project shape: no framework, no
+package manager, and no build step.
 
 The page is generated from GitHub metadata by `update_stats.py`.
 
@@ -40,10 +40,13 @@ overwritten by the next scheduled refresh.
 
 Included repositories must be:
 
-- Owned by the `openclaw` GitHub org.
+- Owned by the `openclaw` GitHub organization or the `steipete` GitHub user.
 - Non-forks and non-archived.
 - More than 200 stars.
 - Pushed within the last three calendar months.
+
+Repositories from both sources are combined into the same traction table and
+the same technology clusters. Do not split `steipete` into a separate section.
 
 The page contains seven rough technology clusters:
 
@@ -70,11 +73,11 @@ and recluster the catalog:
 python3 update_stats.py
 ```
 
-That command queries GitHub for current `openclaw` repositories
-matching the catalog rules, fetches metadata and recent commit counts, assigns
-each repo to a rough technology cluster, rebuilds the fresh-traction table,
-rebuilds the cluster tables, rewrites `index.html`, and updates
-`stats_history.json`.
+That command queries GitHub for current `openclaw` and `steipete` repositories
+matching the catalog rules, fetches metadata and recent commit counts, combines
+both sources, assigns each repo to a rough technology cluster, rebuilds the
+fresh-traction table, rebuilds the cluster tables, rewrites `index.html`, and
+updates `stats_history.json`.
 
 Commit both generated files after a rebuild:
 

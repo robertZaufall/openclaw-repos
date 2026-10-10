@@ -3,8 +3,9 @@
 Build and refresh the OpenClaw GitHub repository catalog.
 
 The script fetches public GitHub metadata for repositories in OpenClaw's
-openclaw organization that were updated in the last three months and have more
-than 200 stars, groups them into technology clusters, and rewrites index.html.
+openclaw organization and the steipete user account that were updated in the
+last three months and have more than 200 stars, combines them into one catalog,
+groups them into technology clusters, and rewrites index.html.
 
 Requirements:
   - Python 3.10+
@@ -36,6 +37,9 @@ from urllib.request import Request, urlopen
 
 
 ORG = "openclaw"
+# Personal account of OpenClaw's creator. Same eligibility rules as the org,
+# merged into the shared traction table and technology clusters.
+CATALOG_USERS = ("steipete",)
 MIN_STARS = 201
 TOP_PER_CLUSTER = 0
 TRACTION_DAYS = 30
@@ -210,7 +214,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Update OpenClaw GitHub repository catalog.")
     parser.add_argument("--file", default="index.html", help="HTML file to write")
     parser.add_argument("--history", default="stats_history.json", help="history JSON file")
-    parser.add_argument("--org", default=ORG, help="GitHub organization")
+    parser.add_argument("--org", default=ORG, help="GitHub organization combined with steipete")
     parser.add_argument("--min-stars", type=int, default=MIN_STARS, help="minimum stars")
     parser.add_argument("--top-per-cluster", type=int, default=TOP_PER_CLUSTER, help="cluster row limit; 0 shows all")
     parser.add_argument("--traction-days", type=int, default=TRACTION_DAYS)
@@ -388,10 +392,26 @@ def baseline_snapshot(history: dict[str, Any], now: datetime, days: int) -> dict
     return None
 
 
-def fetch_repositories(client: GitHubClient, org: str, min_stars: int, pushed_cutoff: datetime) -> list[dict[str, Any]]:
-    query = f"org:{org} stars:>={min_stars} pushed:>={pushed_cutoff.date().isoformat()} fork:false archived:false"
-    repos = fetch_search_repositories(client, query, pushed_cutoff)
-    repos = [repo for repo in repos if repo["stars"] >= min_stars]
+def fetch_repositories(
+    client: GitHubClient,
+    org: str,
+    min_stars: int,
+    pushed_cutoff: datetime,
+    users: tuple[str, ...] = CATALOG_USERS,
+) -> list[dict[str, Any]]:
+    qualifiers = [f"org:{org}", *[f"user:{user}" for user in users if user]]
+    seen: set[str] = set()
+    repos: list[dict[str, Any]] = []
+    for qualifier in qualifiers:
+        query = (
+            f"{qualifier} stars:>={min_stars} "
+            f"pushed:>={pushed_cutoff.date().isoformat()} fork:false archived:false"
+        )
+        for repo in fetch_search_repositories(client, query, pushed_cutoff):
+            if repo["stars"] < min_stars or repo["full_name"] in seen:
+                continue
+            seen.add(repo["full_name"])
+            repos.append(repo)
     repos.sort(key=lambda repo: repo["stars"], reverse=True)
     return repos
 
@@ -521,6 +541,21 @@ def cluster_repo(repo: dict[str, Any]) -> Cluster:
         "clawdinators": "packaging-nix-infra",
         "docs": "skills-plugins-hub",
         "cookbook": "skills-plugins-hub",
+        # steipete repos that the keyword matcher would misfile.
+        "agent-scripts": "skills-plugins-hub",
+        "steipete.me": "skills-plugins-hub",
+        "speaking": "skills-plugins-hub",
+        "oracle": "agent-protocols-mcp",
+        "poltergeist": "review-automation",
+        "birdclaw": "messaging-workspace-clis",
+        "sag": "messaging-workspace-clis",
+        "summarize": "messaging-workspace-clis",
+        "sweet-cookie": "messaging-workspace-clis",
+        "tmuxwatch": "messaging-workspace-clis",
+        "codexbar": "native-apps-desktop",
+        "demark": "native-apps-desktop",
+        "repobar": "native-apps-desktop",
+        "trimmy": "native-apps-desktop",
     }
     clusters_by_key = {cluster.key: cluster for cluster in CLUSTERS}
     name_override = name_overrides.get(repo["name"].lower())
@@ -1498,7 +1533,7 @@ def render_html(
 <body>
   <header class="header page-header">
     <h1 class="page-title"><span class="logo-box">OC</span>OpenClaw GitHub Repository Atlas</h1>
-    <p>Searchable snapshot of public repositories from OpenClaw's <a href="https://github.com/orgs/openclaw/repositories" target="_blank" rel="noreferrer">openclaw organization</a>. Included repositories have more than 200 stars and were pushed within the last three months, since {cutoff}.</p>
+    <p>Searchable snapshot of public repositories from OpenClaw's <a href="https://github.com/orgs/openclaw/repositories" target="_blank" rel="noreferrer">openclaw organization</a> and <a href="https://github.com/steipete?tab=repositories" target="_blank" rel="noreferrer">steipete</a>, combined into one catalog. Included repositories have more than 200 stars and were pushed within the last three months, since {cutoff}.</p>
     <div class="metric-strip" aria-label="Catalog summary">
       <div class="metric-card"><strong>{len(repos)}</strong><span>qualified repos</span></div>
       <div class="metric-card"><strong>{fmt_number(total_stars)}</strong><span>combined stars</span></div>
@@ -1530,6 +1565,8 @@ def render_html(
       <a class="gh-link" href="https://docs.openclaw.ai/" target="_blank" rel="noreferrer" style="display: inline;">Docs</a>
       <span style="margin: 0 4px;">·</span>
       <a class="gh-link" href="https://github.com/openclaw/openclaw" target="_blank" rel="noreferrer" style="display: inline;">openclaw/openclaw</a>
+      <span style="margin: 0 4px;">·</span>
+      <a class="gh-link" href="https://github.com/steipete" target="_blank" rel="noreferrer" style="display: inline;">steipete</a>
     </p>
     <p style="text-align: center;">Generated from the GitHub API · Last updated: <span id="last-updated-date">{updated}</span></p>
   </footer>
@@ -1625,7 +1662,12 @@ def main() -> int:
     html = render_html(repos, extra_sections, now, pushed_cutoff, args)
     Path(args.file).write_text(html, encoding="utf-8")
     write_history(history_path, history, all_repos, now)
-    print(f"Wrote {args.file} with {len(repos)} OpenClaw repositories")
+    org_count = sum(1 for repo in repos if repo["full_name"].startswith(f"{args.org}/"))
+    user_counts = ", ".join(
+        f"{sum(1 for repo in repos if repo['full_name'].startswith(f'{user}/'))} from {user}"
+        for user in CATALOG_USERS
+    )
+    print(f"Wrote {args.file} with {len(repos)} repositories ({org_count} from {args.org}, {user_counts})")
     print(f"Wrote {args.history}")
     return 0
 
