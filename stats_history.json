@@ -2819,6 +2819,146 @@
           "stars": 204
         }
       }
+    },
+    {
+      "date": "2026-10-10",
+      "repos": {
+        "openclaw/AXorcist": {
+          "forks": 33,
+          "pushed_at": "2026-10-10T06:08:05Z",
+          "stars": 325
+        },
+        "openclaw/Peekaboo": {
+          "forks": 411,
+          "pushed_at": "2026-10-10T06:07:02Z",
+          "stars": 5273
+        },
+        "openclaw/Tachikoma": {
+          "forks": 53,
+          "pushed_at": "2026-10-07T10:24:32Z",
+          "stars": 298
+        },
+        "openclaw/acpx": {
+          "forks": 348,
+          "pushed_at": "2026-10-10T05:42:05Z",
+          "stars": 3326
+        },
+        "openclaw/agent-skills": {
+          "forks": 109,
+          "pushed_at": "2026-10-07T04:50:27Z",
+          "stars": 1102
+        },
+        "openclaw/clawhub": {
+          "forks": 1493,
+          "pushed_at": "2026-10-09T16:14:20Z",
+          "stars": 9499
+        },
+        "openclaw/clawpatch": {
+          "forks": 121,
+          "pushed_at": "2026-10-07T09:56:17Z",
+          "stars": 814
+        },
+        "openclaw/clawsweeper": {
+          "forks": 313,
+          "pushed_at": "2026-10-10T06:05:27Z",
+          "stars": 1996
+        },
+        "openclaw/clickclack": {
+          "forks": 72,
+          "pushed_at": "2026-10-07T06:39:43Z",
+          "stars": 300
+        },
+        "openclaw/crabbox": {
+          "forks": 192,
+          "pushed_at": "2026-10-10T05:17:49Z",
+          "stars": 1455
+        },
+        "openclaw/crabfleet": {
+          "forks": 39,
+          "pushed_at": "2026-10-07T08:06:54Z",
+          "stars": 239
+        },
+        "openclaw/discrawl": {
+          "forks": 98,
+          "pushed_at": "2026-10-07T07:14:09Z",
+          "stars": 853
+        },
+        "openclaw/gogcli": {
+          "forks": 711,
+          "pushed_at": "2026-10-10T06:09:23Z",
+          "stars": 8487
+        },
+        "openclaw/goplaces": {
+          "forks": 36,
+          "pushed_at": "2026-10-07T03:48:11Z",
+          "stars": 261
+        },
+        "openclaw/imsg": {
+          "forks": 185,
+          "pushed_at": "2026-10-07T23:40:27Z",
+          "stars": 1358
+        },
+        "openclaw/lobster": {
+          "forks": 290,
+          "pushed_at": "2026-10-07T07:21:02Z",
+          "stars": 1270
+        },
+        "openclaw/mcporter": {
+          "forks": 350,
+          "pushed_at": "2026-10-07T03:14:25Z",
+          "stars": 5055
+        },
+        "openclaw/nix-openclaw": {
+          "forks": 227,
+          "pushed_at": "2026-09-25T11:20:36Z",
+          "stars": 712
+        },
+        "openclaw/openclaw": {
+          "forks": 82295,
+          "pushed_at": "2026-10-10T06:15:30Z",
+          "stars": 391556
+        },
+        "openclaw/openclaw-ansible": {
+          "forks": 255,
+          "pushed_at": "2026-10-07T07:38:06Z",
+          "stars": 601
+        },
+        "openclaw/openclaw-enterprise": {
+          "forks": 77,
+          "pushed_at": "2026-10-10T06:15:50Z",
+          "stars": 382
+        },
+        "openclaw/openclaw-windows-node": {
+          "forks": 310,
+          "pushed_at": "2026-10-10T05:51:47Z",
+          "stars": 2141
+        },
+        "openclaw/remindctl": {
+          "forks": 81,
+          "pushed_at": "2026-10-07T12:10:53Z",
+          "stars": 388
+        },
+        "openclaw/slacrawl": {
+          "forks": 29,
+          "pushed_at": "2026-10-07T22:54:19Z",
+          "stars": 237
+        },
+        "openclaw/spogo": {
+          "forks": 41,
+          "pushed_at": "2026-09-25T11:39:27Z",
+          "stars": 263
+        },
+        "openclaw/wacli": {
+          "forks": 363,
+          "pushed_at": "2026-10-10T05:15:45Z",
+          "stars": 2791
+        },
+        "openclaw/wacrawl": {
+          "forks": 36,
+          "pushed_at": "2026-10-01T16:12:50Z",
+          "stars": 204
+        }
+      }
     }
   ]
 }
