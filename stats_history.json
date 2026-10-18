@@ -4521,11 +4521,11 @@
         "openclaw/acpx": {
           "forks": 348,
           "pushed_at": "2026-10-16T16:28:45Z",
-          "stars": 3361
+          "stars": 3362
         },
         "openclaw/agent-skills": {
           "forks": 110,
-          "pushed_at": "2026-10-18T02:53:55Z",
+          "pushed_at": "2026-10-18T07:04:31Z",
           "stars": 1106
         },
         "openclaw/clawhub": {
@@ -4541,7 +4541,7 @@
         "openclaw/clawsweeper": {
           "forks": 315,
           "pushed_at": "2026-10-18T02:44:31Z",
-          "stars": 2001
+          "stars": 2002
         },
         "openclaw/clickclack": {
           "forks": 71,
@@ -4551,7 +4551,7 @@
         "openclaw/crabbox": {
           "forks": 199,
           "pushed_at": "2026-10-17T01:51:23Z",
-          "stars": 1480
+          "stars": 1481
         },
         "openclaw/crabfleet": {
           "forks": 39,
@@ -4559,14 +4559,14 @@
           "stars": 240
         },
         "openclaw/discrawl": {
-          "forks": 98,
+          "forks": 97,
           "pushed_at": "2026-10-18T02:04:35Z",
           "stars": 855
         },
         "openclaw/gogcli": {
-          "forks": 712,
+          "forks": 713,
           "pushed_at": "2026-10-17T06:04:52Z",
-          "stars": 8512
+          "stars": 8511
         },
         "openclaw/goplaces": {
           "forks": 36,
@@ -4576,7 +4576,7 @@
         "openclaw/imsg": {
           "forks": 188,
           "pushed_at": "2026-10-16T19:11:36Z",
-          "stars": 1367
+          "stars": 1368
         },
         "openclaw/lobster": {
           "forks": 292,
@@ -4594,9 +4594,9 @@
           "stars": 716
         },
         "openclaw/openclaw": {
-          "forks": 82467,
-          "pushed_at": "2026-10-18T06:13:16Z",
-          "stars": 392311
+          "forks": 82472,
+          "pushed_at": "2026-10-18T12:08:05Z",
+          "stars": 392333
         },
         "openclaw/openclaw-ansible": {
           "forks": 256,
@@ -4605,13 +4605,13 @@
         },
         "openclaw/openclaw-enterprise": {
           "forks": 86,
-          "pushed_at": "2026-10-18T06:09:37Z",
+          "pushed_at": "2026-10-18T12:07:32Z",
           "stars": 417
         },
         "openclaw/openclaw-windows-node": {
-          "forks": 315,
+          "forks": 316,
           "pushed_at": "2026-10-17T22:55:54Z",
-          "stars": 2157
+          "stars": 2159
         },
         "openclaw/remindctl": {
           "forks": 81,
@@ -4639,9 +4639,9 @@
           "stars": 208
         },
         "steipete/CodexBar": {
-          "forks": 2127,
+          "forks": 2128,
           "pushed_at": "2026-10-17T03:35:29Z",
-          "stars": 22605
+          "stars": 22614
         },
         "steipete/Demark": {
           "forks": 25,
