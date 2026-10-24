@@ -1,0 +1,12 @@
+[
+  {
+    "file": "github-openclaw.jpg",
+    "source": "https://github.com/openclaw.png?size=32",
+    "sha256": "1f362d65d45a4c91b787555e75bd51f55eec210572db8def5044de0ca03a4a3f"
+  },
+  {
+    "file": "github-steipete.jpg",
+    "source": "https://github.com/steipete.png?size=32",
+    "sha256": "55736a336f35c7b51e3f190ca7fef2fc9218752c5527fa65b59ee11e155a095e"
+  }
+]
