@@ -11874,9 +11874,9 @@
           "stars": 3458
         },
         "openclaw/agent-skills": {
-          "forks": 127,
+          "forks": 128,
           "pushed_at": "2026-11-21T23:22:39Z",
-          "stars": 1127
+          "stars": 1128
         },
         "openclaw/clawhub": {
           "forks": 1491,
@@ -11934,7 +11934,7 @@
           "stars": 1282
         },
         "openclaw/mcporter": {
-          "forks": 365,
+          "forks": 364,
           "pushed_at": "2026-11-21T23:26:43Z",
           "stars": 5140
         },
@@ -11944,9 +11944,9 @@
           "stars": 717
         },
         "openclaw/openclaw": {
-          "forks": 82948,
-          "pushed_at": "2026-11-22T06:05:51Z",
-          "stars": 395002
+          "forks": 82946,
+          "pushed_at": "2026-11-22T09:54:53Z",
+          "stars": 395018
         },
         "openclaw/openclaw-ansible": {
           "forks": 251,
@@ -11955,7 +11955,7 @@
         },
         "openclaw/openclaw-enterprise": {
           "forks": 127,
-          "pushed_at": "2026-11-22T05:53:07Z",
+          "pushed_at": "2026-11-22T09:56:24Z",
           "stars": 483
         },
         "openclaw/openclaw-windows-node": {
@@ -11989,9 +11989,9 @@
           "stars": 222
         },
         "steipete/CodexBar": {
-          "forks": 2243,
+          "forks": 2245,
           "pushed_at": "2026-11-21T17:40:47Z",
-          "stars": 23263
+          "stars": 23265
         },
         "steipete/Demark": {
           "forks": 25,
@@ -12009,9 +12009,9 @@
           "stars": 755
         },
         "steipete/agent-scripts": {
-          "forks": 667,
+          "forks": 668,
           "pushed_at": "2026-11-21T02:42:36Z",
-          "stars": 7554
+          "stars": 7555
         },
         "steipete/birdclaw": {
           "forks": 160,
